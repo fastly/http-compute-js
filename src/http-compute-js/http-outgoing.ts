@@ -109,7 +109,6 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
   readonly req: IncomingMessage;
   sendDate: boolean = false;
   shouldKeepAlive: boolean = true; // ??
-  readonly socket: null = null;
   useChunkedEncodingByDefault: boolean = true;
 
   _last: boolean;
@@ -188,11 +187,27 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
   }
 
   get connection() {
+    // Difference from Node.js -
+    // Connection is not supported
     return null;
   }
 
   set connection(_socket: any) {
+    // Difference from Node.js -
+    // Connection is not supported
     console.error('No support for OutgoingMessage.connection');
+  }
+
+  get socket() {
+    // Difference from Node.js -
+    // socket is not supported
+    return null;
+  }
+
+  set socket(_socket: any) {
+    // Difference from Node.js -
+    // socket is not supported
+    console.error('No support for OutgoingMessage.socket');
   }
 
   get _headerNames() {
@@ -694,11 +709,8 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
         return this;
       }
 
-      /*
-      if (this.socket) {
-        this.socket.cork();
-      }
-      */
+      // Difference from Node.js -
+      // In Node.js, if a socket exists, we would also call socket.cork() at this point.
       write_(this, ch, e, undefined, true);
     } else if (this.finished) {
       if (typeof callback === 'function') {

@@ -125,45 +125,27 @@ export class ComputeJsServerResponse extends ComputeJsOutgoingMessage implements
       this.shouldKeepAlive = false;
     }
 
-    /*
-    if (hasObserver('http')) {
-      startPerf(this, kServerResponseStatistics, {
-        type: 'http',
-        name: 'HttpRequest',
-        detail: {
-          req: {
-            method: req.method,
-            url: req.url,
-            headers: req.headers,
-          },
-        },
-      });
-    }
-    */
+    // Difference from Node.js -
+    // In Node.js, in addition to the above, we would check if an observer is enabled for
+    // http, and if it is, we would start performance measurement of server response statistics.
+    // We may choose to do something like this too in the future.
   }
 
   override _finish() {
-    /*
-    if (this[kServerResponseStatistics] && hasObserver('http')) {
-      stopPerf(this, kServerResponseStatistics, {
-        detail: {
-          res: {
-            statusCode: this.statusCode,
-            statusMessage: this.statusMessage,
-            headers: typeof this.getHeaders === 'function' ? this.getHeaders() : {},
-          },
-        },
-      });
-    }
-    */
+    // Difference from Node.js -
+    // In Node.js, if server response statistics performance is being measured, we would stop it.
     super._finish();
   }
 
   assignSocket(socket: any): void {
+    // Difference from Node.js -
+    // Socket is not supported
     throw new ERR_METHOD_NOT_IMPLEMENTED('assignSocket');
   }
 
   detachSocket(socket: any): void {
+    // Difference from Node.js -
+    // Socket is not supported
     throw new ERR_METHOD_NOT_IMPLEMENTED('detachSocket');
   }
 
@@ -193,9 +175,11 @@ export class ComputeJsServerResponse extends ComputeJsOutgoingMessage implements
     }
 
     if (typeof reason === 'string') {
+      // This means this was called as:
       // writeHead(statusCode, reasonPhrase[, headers])
       this.statusMessage = reason;
     } else {
+      // This means this was called as:
       // writeHead(statusCode[, headers])
       if (!this.statusMessage)
         this.statusMessage = STATUS_CODES[statusCode] || 'unknown';

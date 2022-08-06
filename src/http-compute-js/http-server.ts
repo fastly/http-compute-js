@@ -278,7 +278,7 @@ type RequestResponse = {
   res: ServerResponse,
 };
 
-export function generateRequestResponse(req: Request): RequestResponse {
+export function toReqRes(req: Request): RequestResponse {
 
   const incoming = new ComputeJsIncomingMessage();
   const serverResponse = new ComputeJsServerResponse(incoming);

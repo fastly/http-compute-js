@@ -5,6 +5,7 @@
 
 // This file modeled after Node.js - /lib/_http_outgoing.js
 
+import { Buffer } from 'buffer';
 import { Writable } from 'stream';
 import type { OutgoingHttpHeaders, OutgoingMessage, IncomingMessage, OutgoingHttpHeader } from 'http';
 

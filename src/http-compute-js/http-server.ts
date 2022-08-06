@@ -5,6 +5,7 @@
 
 // This file modeled after Node.js - /lib/_http_server.js
 
+import { Buffer } from 'buffer';
 import type { IncomingMessage, OutgoingHttpHeader, OutgoingHttpHeaders, ServerResponse } from 'http';
 
 import {

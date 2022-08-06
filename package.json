@@ -1,0 +1,44 @@
+{
+  "name": "@fastly/http-compute-js",
+  "version": "0.1.0-alpha.0",
+  "description": "A library aiming to provide Node.js-compatible request and response objects",
+  "main": "dist/index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "prepack": "yarn clean && yarn compile",
+    "compile": "tsc --build tsconfig.json",
+    "clean": "rm -rf dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fastly/http-compute-js.git"
+  },
+  "keywords": [
+    "fastly",
+    "compute",
+    "compute-js",
+    "node",
+    "http",
+    "request",
+    "response"
+  ],
+  "author": "Katsuyuki Omuro <komuro@fastly.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fastly/http-compute-js/issues"
+  },
+  "homepage": "https://github.com/fastly/http-compute-js#readme",
+  "devDependencies": {
+    "@fastly/js-compute": "^0.4.0",
+    "@types/node": "^18.6.4",
+    "typescript": "^4.7.4"
+  },
+  "dependencies": {
+    "buffer": "^6.0.3",
+    "node-inspect-extracted": "^1.1.0",
+    "process": "^0.11.10",
+    "stream-browserify": "^3.0.0"
+  }
+}

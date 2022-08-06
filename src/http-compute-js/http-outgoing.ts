@@ -31,7 +31,6 @@ import {
   checkIsHttpToken,
   chunkExpression as RE_TE_CHUNKED,
 } from './http-common';
-import { ComputeJsServerResponse } from './http-server';
 
 // Modeled after node.js/lib/_http_outgoing.js
 
@@ -409,10 +408,13 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
     // It was pointed out that this might confuse reverse proxies to the point
     // of creating security liabilities, so suppress the zero chunk and force
     // the connection to close.
-    if (this instanceof ComputeJsServerResponse &&
-      this.chunkedEncoding && (this.statusCode === 204 ||
-        this.statusCode === 304)) {
-      console.log(this.statusCode + ' response should not use chunked encoding,' +
+
+    // NOTE: the "as any" here is needed because 'statusCode' is only
+    // defined on the subclass but is used here.
+    if (
+      this.chunkedEncoding && ((this as any).statusCode === 204 ||
+        (this as any).statusCode === 304)) {
+      console.log((this as any).statusCode + ' response should not use chunked encoding,' +
         ' closing connection.');
       this.chunkedEncoding = false;
       this.shouldKeepAlive = false;

@@ -257,15 +257,27 @@ export class ComputeJsServerResponse extends ComputeJsOutgoingMessage implements
   writeHeader = this.writeHead;
 }
 
-type RequestResponse = {
+export type ReqRes = {
   req: IncomingMessage,
   res: ServerResponse,
 };
 
-export function toReqRes(req: Request): RequestResponse {
+export type ToReqResOptions = {
+  createIncomingMessage?: (ctx?: any) => ComputeJsIncomingMessage,
+  createServerResponse?: (incomingMessage: ComputeJsIncomingMessage, ctx?: any) => ComputeJsServerResponse,
+  ctx?: any;
+};
 
-  const incoming = new ComputeJsIncomingMessage();
-  const serverResponse = new ComputeJsServerResponse(incoming);
+export function toReqRes(req: Request, options?: ToReqResOptions): ReqRes {
+
+  const {
+    createIncomingMessage = () => new ComputeJsIncomingMessage(),
+    createServerResponse = (incoming: ComputeJsIncomingMessage) => new ComputeJsServerResponse(incoming),
+    ctx,
+  } = options ?? {};
+
+  const incoming = createIncomingMessage(ctx);
+  const serverResponse = createServerResponse(incoming, ctx);
 
   const reqUrl = new URL(req.url);
 

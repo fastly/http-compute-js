@@ -3,6 +3,7 @@
   "version": "0.1.0-alpha.0",
   "description": "A library aiming to provide Node.js-compatible request and response objects",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "directories": {
     "lib": "lib"
   },
@@ -40,5 +41,13 @@
     "node-inspect-extracted": "^1.1.0",
     "process": "^0.11.10",
     "stream-browserify": "^3.0.0"
-  }
+  },
+  "files": [
+    "dist/**/*.js",
+    "dist/**/*.js.map",
+    "dist/**/*.d.ts",
+    "LICENSE",
+    "README.md",
+    "SECURITY.md"
+  ]
 }

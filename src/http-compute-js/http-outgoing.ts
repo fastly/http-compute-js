@@ -322,9 +322,9 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
       // Save written headers as object
       for (const headerLine of this._header!.split('\r\n').slice(1)) {
         if(headerLine !== '') {
-          const pos = headerLine.indexOf(':');
+          const pos = headerLine.indexOf(': ');
           const k = headerLine.slice(0, pos);
-          const v = headerLine.slice(pos + 1);
+          const v = headerLine.slice(pos + 2); // Skip the colon and the space
           this._objSentHeaders[k] = v;
         }
       }

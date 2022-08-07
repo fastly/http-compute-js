@@ -19,6 +19,7 @@ import { ComputeJsOutgoingMessage } from './http-outgoing';
 import { chunkExpression } from './http-common';
 import { ComputeJsIncomingMessage } from './http-incoming';
 import { kOutHeaders } from './internal-http';
+import { EventEmitter } from "events";
 
 const headerCharRegex = /[^\t\x20-\x7e\x80-\xff]/;
 /**
@@ -349,4 +350,65 @@ export function toComputeResponse(res: ServerResponse) {
     status,
     headers,
   });
+}
+
+export type HttpServerOptions = {
+};
+
+export type RequestListener =
+  (req: IncomingMessage, res: ServerResponse) => void;
+
+export type ListenListener =
+  () => void;
+
+export class HttpServer extends EventEmitter {
+  constructor(_options?: HttpServerOptions) {
+    // options is currently unused.
+    super();
+  }
+
+  _listening: boolean = false;
+  listen(port?: number | ListenListener, onListen?: ListenListener) {
+    if(this._listening) {
+      throw new Error(`Cannot call 'listen()' more than once on a single HttpServer instance.`);
+    }
+    if(typeof port === 'function') {
+      onListen = port;
+      port = undefined;
+    }
+    if(port != null) {
+      console.warn('Cannot set port programmatically. The port used is determined by the Compute@Edge environment.');
+    }
+    if(onListen != null) {
+      console.log(`Attaching 'listening' listener, but note that this event runs outside the context of handling a request.`);
+      this.on('listening', onListen);
+    }
+
+    const handleRequest = async (event: FetchEvent) => {
+      // Create Node.js-compatible request and response from event.request
+      const { req, res } = toReqRes(event.request);
+      this.emit('request', req, res);
+
+      // Convert the response object to Compute@Edge Response object and return it
+      return toComputeResponse(res);
+    };
+
+    addEventListener("fetch", (event) => event.respondWith(handleRequest(event)));
+  }
+}
+
+export function createServer(options?: HttpServerOptions | RequestListener, onRequest?: RequestListener) {
+
+  if(typeof options === 'function') {
+    onRequest = options as RequestListener;
+    options = undefined;
+  }
+
+  const server = new HttpServer(options);
+
+  if(onRequest != null) {
+    server.on('request', onRequest);
+  }
+
+  return server;
 }

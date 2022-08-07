@@ -72,6 +72,66 @@ type OutputData = {
   callback: WriteCallback | undefined,
 };
 
+type WritenDataBufferEntry = OutputData & {
+  length: number,
+  written: boolean,
+};
+
+// This class accepts data "written" to the outgoing message.
+export class WrittenDataBuffer {
+  [kCorked]: number = 0;
+  entries: WritenDataBufferEntry[] = [];
+
+  write(data: string | Uint8Array, encoding?: BufferEncoding, callback?: WriteCallback) {
+    this.entries.push({
+      data,
+      length: data.length,
+      encoding,
+      callback,
+      written: false,
+    });
+    this._flush();
+
+    return true;
+  }
+
+  cork() {
+    this[kCorked]++;
+  }
+
+  uncork() {
+    this[kCorked]--;
+    this._flush();
+  }
+
+  _flush() {
+    if(this[kCorked] <= 0) {
+      for(const entry of this.entries) {
+        if(!entry.written) {
+          entry.written = true;
+          if(entry.callback != null) {
+            entry.callback.call(undefined);
+          }
+        }
+      }
+    }
+  }
+
+  get writableLength() {
+    return this.entries.reduce<number>((acc, entry) => {
+      return acc + (entry.written! && entry.length! ? entry.length : 0);
+    }, 0);
+  }
+
+  get writableHighWaterMark() {
+    return HIGH_WATER_MARK;
+  }
+
+  get writableCorked() {
+    return this[kCorked];
+  }
+}
+
 // This is an implementation of OutgoingMessage from Node.js intended to run in
 // Compute@Edge. This does not give access to the underlying socket or connection
 // (mainly because there isn't one)
@@ -135,6 +195,8 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
   _onPendingData: (delta: number) => void;
 
   [kUniqueHeaders]: Set<string> | null;
+
+  _writtenDataBuffer: WrittenDataBuffer = new WrittenDataBuffer();
 
   constructor(req: IncomingMessage) {
     super();
@@ -270,13 +332,25 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
   override cork(): void {
     // Difference from Node.js -
     // In Node.js, if a socket exists, we would call cork() on the socket instead
-    this[kCorked]++;
+    // In our implementation, we do the same to the "written data buffer" instead.
+
+    if(this._writtenDataBuffer != null) {
+      this._writtenDataBuffer.cork();
+    } else {
+      this[kCorked]++;
+    }
   }
 
   override uncork(): void {
     // Difference from Node.js -
     // In Node.js, if a socket exists, we would call uncork() on the socket instead
-    this[kCorked]--;
+    // In our implementation, we do the same to the "written data buffer" instead.
+
+    if(this._writtenDataBuffer != null) {
+      this._writtenDataBuffer.uncork();
+    } else {
+      this[kCorked]--;
+    }
   }
 
   setTimeout(msecs: number, callback?: () => void): this {
@@ -352,6 +426,16 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
     // exists and is currently writable, it would flush any pending data to the socket and then
     // write the current chunk's data directly into the socket. Afterwards, it would return with the
     // value returned from socket.write().
+
+    // In our implementation, instead we do the same for the "written data buffer".
+    if(this._writtenDataBuffer != null) {
+      // There might be pending data in the this.output buffer.
+      if (this.outputData.length) {
+        this._flushOutput(this._writtenDataBuffer);
+      }
+      // Directly write to the buffer.
+      return this._writtenDataBuffer.write(data, e, callback);
+    }
 
     // Buffer, as long as we're not destroyed.
     this.outputData.push({ data, encoding: e, callback });
@@ -727,6 +811,10 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
 
       // Difference from Node.js -
       // In Node.js, if a socket exists, we would also call socket.cork() at this point.
+      // For our implementation we do the same for the "written data buffer"
+      if(this._writtenDataBuffer != null) {
+        this._writtenDataBuffer.cork();
+      }
       write_(this, ch, e, undefined, true);
     } else if (this.finished) {
       if (typeof callback === 'function') {
@@ -740,6 +828,10 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
     } else if (!this._header) {
       // Difference from Node.js -
       // In Node.js, if a socket exists, we would also call socket.cork() at this point.
+      // For our implementation we do the same for the "written data buffer"
+      if(this._writtenDataBuffer != null) {
+        this._writtenDataBuffer.cork();
+      }
       this._contentLength = 0;
       this._implicitHeader();
     }
@@ -759,6 +851,10 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
 
     // Difference from Node.js -
     // In Node.js, if a socket exists, we would also call socket.uncork() at this point.
+    // For our implementation we do the same for the "written data buffer"
+    if(this._writtenDataBuffer != null) {
+      this._writtenDataBuffer.uncork();
+    }
     this[kCorked] = 0;
 
     this.finished = true;
@@ -769,6 +865,14 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
     // Difference from Node.js -
     // In Node.js, if a socket exists, and there is no pending output data,
     // we would also call this._finish() at this point.
+    // For our implementation we do the same for the "written data buffer"
+
+    if (this.outputData.length === 0 &&
+      this._writtenDataBuffer != null
+    ) {
+      this._finish();
+    }
+
     return this;
   }
 
@@ -776,6 +880,36 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
     // Difference from Node.js -
     // In Node.js, this function is only called if a socket exists.
     // This function would assert() for a socket and then emit 'prefinish'.
+    // For our implementation we do the same for the "written data buffer"
+    this.emit('prefinish');
+  }
+
+  _flushOutput(dataBuffer: WrittenDataBuffer) {
+    while (this[kCorked]) {
+      this[kCorked]--;
+      dataBuffer.cork();
+    }
+
+    const outputLength = this.outputData.length;
+    if (outputLength <= 0)
+      return undefined;
+
+    const outputData = this.outputData;
+    dataBuffer.cork();
+    let ret;
+    // Retain for(;;) loop for performance reasons
+    // Refs: https://github.com/nodejs/node/pull/30958
+    for (let i = 0; i < outputLength; i++) {
+      const { data, encoding, callback } = outputData[i];
+      ret = dataBuffer.write(data, encoding, callback);
+    }
+    dataBuffer.uncork();
+
+    this.outputData = [];
+    this._onPendingData(-this.outputSize);
+    this.outputSize = 0;
+
+    return ret;
   }
 
   flushHeaders(): void {
@@ -953,6 +1087,11 @@ function write_(msg: ComputeJsOutgoingMessage, chunk: string | Buffer | Uint8Arr
   // Difference from Node.js -
   // In Node.js, we would also check at this point if a socket exists and is not corked.
   // If so, we'd cork the socket and then queue up an 'uncork' for the next tick.
+  // In our implementation we do the same for "written data buffer"
+  if (!fromEnd && msg._writtenDataBuffer != null && !msg._writtenDataBuffer.writableCorked) {
+    msg._writtenDataBuffer.cork();
+    process.nextTick(connectionCorkNT, msg._writtenDataBuffer);
+  }
 
   let ret;
   if (msg.chunkedEncoding && chunk.length !== 0) {
@@ -966,6 +1105,10 @@ function write_(msg: ComputeJsOutgoingMessage, chunk: string | Buffer | Uint8Arr
 
   console.log('write ret = ' + ret);
   return ret;
+}
+
+function connectionCorkNT(dataBuffer: WrittenDataBuffer) {
+  dataBuffer.uncork();
 }
 
 function onFinish(outmsg: ComputeJsOutgoingMessage) {
@@ -982,9 +1125,14 @@ Object.defineProperties(ComputeJsOutgoingMessage.prototype, {
       // Difference from Node.js -
       // In Node.js, there is one additional requirement --
       //   there must be no underlying socket (or its writableLength must be 0).
-      // Since that is always true in this implmentation (we will never have a socket),
-      // we're just excluding that from the condition.
-      return this.finished && this.outputSize === 0;
+      // In this implementation we will do the same against "written data buffer".
+      return (
+        this.finished &&
+        this.outputSize === 0 && (
+          this._writtenDataBuffer == null ||
+          this._writtenDataBuffer.writableLength === 0
+        )
+      );
     },
   },
   writableObjectMode: {
@@ -997,7 +1145,8 @@ Object.defineProperties(ComputeJsOutgoingMessage.prototype, {
       // Difference from Node.js -
       // In Node.js, if a socket exists then that socket's writableLength is added to
       // this value.
-      return this.outputSize;
+      // In this implementation we will do the same against "written data buffer".
+      return this.outputSize + (this._writtenDataBuffer != null ? this._writtenDataBuffer.writableLength : 0);
     },
   },
   writableHighWaterMark: {
@@ -1005,7 +1154,8 @@ Object.defineProperties(ComputeJsOutgoingMessage.prototype, {
       // Difference from Node.js -
       // In Node.js, if a socket exists then that socket's writableHighWaterMark is added to
       // this value.
-      return HIGH_WATER_MARK;
+      // In this implementation we will do the same against "written data buffer".
+      return HIGH_WATER_MARK + (this._writtenDataBuffer != null ? this._writtenDataBuffer.writableHighWaterMark : 0);
     },
   },
   writableCorked: {
@@ -1013,7 +1163,8 @@ Object.defineProperties(ComputeJsOutgoingMessage.prototype, {
       // Difference from Node.js -
       // In Node.js, if a socket exists then that socket's writableCorked is added to
       // this value.
-      return this[kCorked];
+      // In this implementation we will do the same against "written data buffer".
+      return this[kCorked] + (this._writtenDataBuffer != null ? this._writtenDataBuffer.writableCorked : 0);
     },
   },
   writableEnded: {

@@ -318,7 +318,7 @@ export function toComputeResponse(res: ServerResponse) {
   const body = res._hasBody ? new ReadableStream<Uint8Array>({
     start(controller) {
       // First packet contains the header. sigh.
-      for (const [index, packet] of res.outputData.entries()) {
+      for (const [index, packet] of res._writtenDataBuffer.entries.entries()) {
         let { data, encoding } = packet;
         if(index === 0) {
           if(typeof data !== 'string') {

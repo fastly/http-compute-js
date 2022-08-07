@@ -2,6 +2,22 @@
 
 export { ComputeJsIncomingMessage } from './http-compute-js/http-incoming';
 export { ComputeJsOutgoingMessage } from './http-compute-js/http-outgoing';
-export { toReqRes, toComputeResponse, ReqRes, ToReqResOptions, ComputeJsServerResponse } from './http-compute-js/http-server';
+export {
+  createServer,
+  toReqRes,
+  toComputeResponse,
+  ComputeJsServerResponse,
+  HttpServer,
+  HttpServerOptions,
+  ReqRes,
+  ToReqResOptions,
+} from './http-compute-js/http-server';
 
 export * as polyfill from './polyfill';
+
+import {
+  createServer
+} from './http-compute-js/http-server';
+export default {
+  createServer,
+};

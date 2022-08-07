@@ -108,7 +108,7 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
   readonly req: IncomingMessage;
   sendDate: boolean = false;
   shouldKeepAlive: boolean = true; // ??
-  useChunkedEncodingByDefault: boolean = true;
+  useChunkedEncodingByDefault: boolean = false; // Not liked by viceroy? for now disabling
 
   _last: boolean;
   maxRequestsOnConnectionReached: boolean;

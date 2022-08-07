@@ -127,8 +127,9 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
   _closed: boolean;
 
   _header: string | null;
-
   [kOutHeaders]: Record<string, any> | null;
+  _objSentHeaders: Record<string, string>;
+
   _keepAliveTimeout: number;
 
   _onPendingData: (delta: number) => void;
@@ -156,6 +157,8 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
 
     this._header = null;
     this[kOutHeaders] = null;
+
+    this._objSentHeaders = {};
 
     this._keepAliveTimeout = 0;
 
@@ -315,6 +318,17 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
         this._onPendingData(header.length);
       }
       this.writtenHeaderBytes = header.length;
+
+      // Save written headers as object
+      for (const headerLine of this._header!.split('\r\n')) {
+        if(headerLine !== '') {
+          const pos = headerLine.indexOf(':');
+          const k = headerLine.slice(0, pos);
+          const v = headerLine.slice(pos + 1);
+          this._objSentHeaders[k] = v;
+        }
+      }
+
       this._headerSent = true;
     }
     return this._writeRaw(data, encoding, callback);
@@ -891,6 +905,8 @@ function write_(msg: ComputeJsOutgoingMessage, chunk: string | Buffer | Uint8Arr
   if (typeof callback !== 'function') {
     callback = nop;
   }
+
+  console.log('write', {chunk, encoding});
 
   let len: number;
   if (chunk === null) {

@@ -340,14 +340,8 @@ export function toComputeResponse(res: ServerResponse) {
   const status = res.statusCode;
 
   const headers = new Headers();
-  for (const [key, value] of Object.entries(res.getHeaders())) {
-    if(Array.isArray(value)) {
-      for(const v of value) {
-        headers.append(key, v);
-      }
-    } else {
-      headers.append(key, String(value));
-    }
+  for (const [key, value] of Object.entries(res._objSentHeaders)) {
+    headers.append(key, value);
   }
 
   return new Response(body, {

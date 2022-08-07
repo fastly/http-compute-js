@@ -320,7 +320,7 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
       this.writtenHeaderBytes = header.length;
 
       // Save written headers as object
-      for (const headerLine of this._header!.split('\r\n')) {
+      for (const headerLine of this._header!.split('\r\n').slice(1)) {
         if(headerLine !== '') {
           const pos = headerLine.indexOf(':');
           const k = headerLine.slice(0, pos);

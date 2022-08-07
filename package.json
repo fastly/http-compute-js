@@ -1,6 +1,6 @@
 {
   "name": "@fastly/http-compute-js",
-  "version": "0.1.0-alpha.11",
+  "version": "0.1.0-alpha.12",
   "description": "A library aiming to provide Node.js-compatible request and response objects",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

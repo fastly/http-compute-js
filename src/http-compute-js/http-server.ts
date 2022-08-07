@@ -387,10 +387,19 @@ export class HttpServer extends EventEmitter {
     const handleRequest = async (event: FetchEvent) => {
       // Create Node.js-compatible request and response from event.request
       const { req, res } = toReqRes(event.request);
+
+      const responsePromise = new Promise<Response>((resolve, reject) => {
+        res.on('finish', () => {
+          // Convert the response object to Compute@Edge Response object and return it
+          resolve(toComputeResponse(res));
+        });
+        res.on('error', (err) => {
+          reject(err);
+        });
+      });
       this.emit('request', req, res);
 
-      // Convert the response object to Compute@Edge Response object and return it
-      return toComputeResponse(res);
+      return responsePromise;
     };
 
     addEventListener("fetch", (event) => event.respondWith(handleRequest(event)));

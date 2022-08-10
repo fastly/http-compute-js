@@ -4,7 +4,8 @@ A library aiming to provide Node.js-compatible request and response objects.
 
 Compute@Edge provides [Request and Response objects](https://developer.fastly.com/learning/compute/javascript/#composing-requests-and-responses),
 but these are based on the modern [Fetch standard](https://fetch.spec.whatwg.org/), rather than the `req` and `res` objects
-traditionally seen in Node.js programs.
+traditionally seen in Node.js programs.  If you are more familiar with using the Node.js request and response objects, or
+have some libraries that work with them, this library aims to let you do that.
 
 ## Usage
 

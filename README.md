@@ -71,6 +71,7 @@ module.exports = {
   /* other config */
   plugins: [
     new webpack.ProvidePlugin({
+      Buffer: [ 'buffer', 'Buffer' ],
       process: 'process',
       setTimeout: [ 'timeout-polyfill', 'setTimeout' ],
       clearTimeout: [ 'timeout-polyfill', 'clearTimeout' ],
@@ -135,7 +136,7 @@ const server = http.createServer(async (req, res) => {
 server.listen();
 ```
 
-### The `server` object
+## The `server` object
 
 `server` is an instance of `HttpServer`, modeled after [`http.Server`](https://nodejs.org/api/http.html#class-httpserver).
 It is created using the `createServer()` function, usually passing in your request handler.

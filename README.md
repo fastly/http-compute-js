@@ -2,6 +2,10 @@
 
 A library aiming to provide Node.js-compatible request and response objects.
 
+Compute@Edge provides [Request and Response objects](https://developer.fastly.com/learning/compute/javascript/#composing-requests-and-responses),
+but these are based on the modern [Fetch standard](https://fetch.spec.whatwg.org/), rather than the `req` and `res` objects
+traditionally seen in Node.js programs.
+
 ## Usage
 
 To your Compute@Edge JavaScript project (which you can create using `fastly compute init` and the
@@ -49,7 +53,7 @@ headers and status code using the standard interfaces.
 
 ### Notes / Known Issues
 
-* The aim of this library aims to provide compatibility where practical. Please understand that some features are not possible
+* The aim of this library is to provide compatibility where practical. Please understand that some features are not possible
   to achieve 100% compatibility with Node.js, due to platform differences.
 * Other libraries that consume `IncomingMessage` and `ServerResponse` may or may not be compatible with Compute@Edge. Some
   may work with the use of [polyfills, applied during module bundling](https://developer.fastly.com/learning/compute/javascript/#module-bundling).

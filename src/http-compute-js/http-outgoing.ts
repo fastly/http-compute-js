@@ -37,6 +37,10 @@ import {
 const kCorked = Symbol('corked');
 const kUniqueHeaders = Symbol('kUniqueHeaders');
 
+function debug(format: string) {
+  //console.log('http ' + format);
+}
+
 /* These items copied from Node.js: node/lib/_http_outgoing.js. */
 
 const nop = () => {};
@@ -54,7 +58,7 @@ function validateHeaderValue(name: string, value: number | string | ReadonlyArra
     throw new ERR_HTTP_INVALID_HEADER_VALUE(String(value), name);
   }
   if (checkInvalidHeaderChar(String(value))) {
-    console.log('Header "%s" contains invalid characters', name);
+    debug(`Header "${name}" contains invalid characters`);
     throw new ERR_INVALID_CHAR('header content', name);
   }
 }
@@ -515,7 +519,7 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
     if (
       this.chunkedEncoding && ((this as any).statusCode === 204 ||
         (this as any).statusCode === 304)) {
-      console.log((this as any).statusCode + ' response should not use chunked encoding,' +
+      debug((this as any).statusCode + ' response should not use chunked encoding,' +
         ' closing connection.');
       this.chunkedEncoding = false;
       this.shouldKeepAlive = false;
@@ -562,7 +566,7 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
         // We should only be able to get here if both Content-Length and
         // Transfer-Encoding are removed by the user.
         // See: test/parallel/test-http-remove-header-stays-removed.js
-        console.log('Both Content-Length and Transfer-Encoding are removed');
+        debug('Both Content-Length and Transfer-Encoding are removed');
       }
     }
 
@@ -767,7 +771,7 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
       ) {
         for (let j = 0, l = value.length; j < l; j++) {
           if (checkInvalidHeaderChar(value[j])) {
-            console.log('Trailer "%s"[%d] contains invalid characters', field, j);
+            debug(`Trailer "${field}"[${j}] contains invalid characters`);
             throw new ERR_INVALID_CHAR('trailer content', field);
           }
           this._trailer += field + ': ' + value[j] + '\r\n';
@@ -780,7 +784,7 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
         }
 
         if (checkInvalidHeaderChar(value)) {
-          console.log('Trailer "%s" contains invalid characters', field);
+          debug(`Trailer "${field}" contains invalid characters`);
           throw new ERR_INVALID_CHAR('trailer content', field);
         }
         this._trailer += field + ': ' + value + '\r\n';
@@ -864,7 +868,7 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
 
     // There is the first message on the outgoing queue, and we've sent
     // everything to the socket.
-    console.log('outgoing message end.');
+    debug('outgoing message end.');
     // Difference from Node.js -
     // In Node.js, if a socket exists, and there is no pending output data,
     // we would also call this._finish() at this point.
@@ -1043,8 +1047,6 @@ function write_(msg: ComputeJsOutgoingMessage, chunk: string | Buffer | Uint8Arr
     callback = nop;
   }
 
-  console.log('write', {chunk, encoding});
-
   let len: number;
   if (chunk === null) {
     throw new ERR_STREAM_NULL_VALUES();
@@ -1081,7 +1083,7 @@ function write_(msg: ComputeJsOutgoingMessage, chunk: string | Buffer | Uint8Arr
   }
 
   if (!msg._hasBody) {
-    console.log('This type of response MUST NOT have a body. ' +
+    debug('This type of response MUST NOT have a body. ' +
       'Ignoring write() calls.');
     process.nextTick(callback);
     return true;
@@ -1106,7 +1108,7 @@ function write_(msg: ComputeJsOutgoingMessage, chunk: string | Buffer | Uint8Arr
     ret = msg._send(chunk, encoding, callback);
   }
 
-  console.log('write ret = ' + ret);
+  debug('write ret = ' + ret);
   return ret;
 }
 

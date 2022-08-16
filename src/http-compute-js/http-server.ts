@@ -290,6 +290,11 @@ export class ComputeJsServerResponse extends ComputeJsOutgoingMessage implements
   computeResponse: Promise<Response>;
 
   toComputeResponse() {
+    // Currently this is expected to be called after the _writtenDataBuffer is complete, in other words
+    // after OutgoingMessage's finish event has fired.
+    // TODO: Make this so that it's possible to keep streaming to the buffer even after this object is
+    // constructed and returned from the fetch handler.
+
     const _this = this;
     const body = this._hasBody ? new ReadableStream<Uint8Array>({
       start(controller) {

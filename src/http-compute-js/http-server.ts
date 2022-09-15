@@ -321,6 +321,7 @@ export class ComputeJsServerResponse extends ComputeJsOutgoingMessage implements
     }) : null;
 
     const status = this.statusCode;
+    const statusText = this.statusMessage;
 
     const headers = new Headers();
     for (const [key, value] of Object.entries(this._objSentHeaders)) {
@@ -329,6 +330,7 @@ export class ComputeJsServerResponse extends ComputeJsOutgoingMessage implements
 
     return new Response(body, {
       status,
+      statusText,
       headers,
     });
   }

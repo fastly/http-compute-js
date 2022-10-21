@@ -152,6 +152,17 @@ export class WrittenDataBuffer {
   }
 }
 
+export type HeadersSentEvent = {
+  statusCode: number,
+  statusMessage: string,
+  headers: Record<string, string>,
+};
+
+export type DataWrittenEvent = {
+  index: number,
+  entry: WrittenDataBufferEntry,
+};
+
 /**
  * This is an implementation of OutgoingMessage from Node.js intended to run in
  * Compute@Edge. The 'Writable' interface of this class is wired to an in-memory
@@ -206,7 +217,6 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
 
   _header: string | null;
   [kOutHeaders]: Record<string, any> | null;
-  _objSentHeaders: Record<string, string>;
 
   _keepAliveTimeout: number;
 
@@ -214,7 +224,7 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
 
   [kUniqueHeaders]: Set<string> | null;
 
-  _writtenDataBuffer: WrittenDataBuffer = new WrittenDataBuffer();
+  _writtenDataBuffer: WrittenDataBuffer = new WrittenDataBuffer({onWrite: this._onDataWritten.bind(this)});
 
   constructor(req: IncomingMessage) {
     super();
@@ -237,8 +247,6 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
 
     this._header = null;
     this[kOutHeaders] = null;
-
-    this._objSentHeaders = {};
 
     this._keepAliveTimeout = 0;
 
@@ -412,19 +420,46 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
       this.writtenHeaderBytes = header.length;
 
       // Save written headers as object
-      for (const headerLine of this._header!.split('\r\n').slice(1)) {
+      const [ statusLine, ...headerLines ] = this._header!.split('\r\n');
+
+      const STATUS_LINE_REGEXP = /^HTTP\/1\.1 (?<statusCode>\d+) (?<statusMessage>.*)$/;
+      const statusLineResult = STATUS_LINE_REGEXP.exec(statusLine);
+
+      if (statusLineResult == null) {
+        throw new Error('Unexpected! Status line was ' + statusLine);
+      }
+
+      const { statusCode: statusCodeText, statusMessage } = statusLineResult.groups ?? {};
+      const statusCode = parseInt(statusCodeText, 10);
+      const headers: Record<string, string> = {};
+
+      for (const headerLine of headerLines) {
         if(headerLine !== '') {
           const pos = headerLine.indexOf(': ');
           const k = headerLine.slice(0, pos);
           const v = headerLine.slice(pos + 2); // Skip the colon and the space
-          this._objSentHeaders[k] = v;
+          headers[k] = v;
         }
       }
 
       this._headerSent = true;
+
+      // Difference from Node.js -
+      // After headers are 'sent', we trigger an event
+      const event: HeadersSentEvent = {
+        statusCode,
+        statusMessage,
+        headers,
+      };
+      this.emit('_headersSent', event);
     }
     return this._writeRaw(data, encoding, callback);
   };
+
+  _onDataWritten(index: number, entry: WrittenDataBufferEntry) {
+    const event: DataWrittenEvent = { index, entry };
+    this.emit('_dataWritten', event);
+  }
 
   _writeRaw(data: string | Uint8Array, encoding?: BufferEncoding | WriteCallback, callback?: WriteCallback) {
     // Difference from Node.js -

@@ -119,6 +119,8 @@ export const STATUS_CODES: Record<number, string> = {
  */
 export class ComputeJsServerResponse extends ComputeJsOutgoingMessage implements ServerResponse {
 
+  static encoder = new TextEncoder();
+
   statusCode: number = 200;
   statusMessage!: string;
 
@@ -185,7 +187,11 @@ export class ComputeJsServerResponse extends ComputeJsOutgoingMessage implements
     }
 
     if(typeof data === 'string') {
-      data = Buffer.from(data, encoding);
+      if(encoding === undefined || encoding === 'utf8' || encoding === 'utf-8') {
+        data = ComputeJsServerResponse.encoder.encode(data);
+      } else {
+        data = Buffer.from(data, encoding);
+      }
     }
 
     return data;

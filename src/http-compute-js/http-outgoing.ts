@@ -78,7 +78,7 @@ type OutputData = {
   callback: WriteCallback | undefined,
 };
 
-type WritenDataBufferEntry = OutputData & {
+type WrittenDataBufferEntry = OutputData & {
   length: number,
   written: boolean,
 };
@@ -89,7 +89,7 @@ type WritenDataBufferEntry = OutputData & {
  */
 export class WrittenDataBuffer {
   [kCorked]: number = 0;
-  entries: WritenDataBufferEntry[] = [];
+  entries: WrittenDataBufferEntry[] = [];
 
   write(data: string | Uint8Array, encoding?: BufferEncoding, callback?: WriteCallback) {
     this.entries.push({

@@ -166,6 +166,7 @@ export class ComputeJsServerResponse extends ComputeJsOutgoingMessage implements
       };
       this.on('_dataWritten', initialDataWrittenHandler);
       this.on('_headersSent', (e: HeadersSentEvent) => {
+        this.off('_dataWritten', initialDataWrittenHandler);
         // Convert the response object to Compute@Edge Response object and return it
         const { statusCode, statusMessage, headers } = e;
         resolve(this._toComputeResponse(statusCode, statusMessage, headers, initialDataChunks, finished));

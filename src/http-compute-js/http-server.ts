@@ -254,8 +254,9 @@ export class ComputeJsServerResponse extends ComputeJsOutgoingMessage implements
       headers = obj;
     }
 
-    if (checkInvalidHeaderChar(this.statusMessage))
+    if (checkInvalidHeaderChar(this.statusMessage)) {
       throw new ERR_INVALID_CHAR('statusMessage');
+    }
 
     const statusLine = `HTTP/1.1 ${statusCode} ${this.statusMessage}\r\n`;
 

@@ -17,7 +17,7 @@ import {
   ERR_INVALID_CHAR,
   ERR_METHOD_NOT_IMPLEMENTED,
 } from '../utils/errors';
-import { ComputeJsOutgoingMessage } from './http-outgoing';
+import { ComputeJsOutgoingMessage, DataWrittenEvent, HeadersSentEvent } from './http-outgoing';
 import { chunkExpression } from './http-common';
 import { ComputeJsIncomingMessage } from './http-incoming';
 import { kOutHeaders } from './internal-http';
@@ -149,17 +149,46 @@ export class ComputeJsServerResponse extends ComputeJsOutgoingMessage implements
     // http, and if it is, we would start performance measurement of server response statistics.
     // We may choose to do something like this too in the future.
 
-    // In our implementation, we set up some event handlers to fulfill or reject the
-    // Compute@Edge Response.
-    this.computeResponse = new Promise<Response>((resolve, reject) => {
+    // In our implementation, we set up some event handlers to fulfill the Compute@Edge Response.
+    this.computeResponse = new Promise<Response>(resolve => {
+      let finished = false;
       this.on('finish', () => {
-        // Convert the response object to Compute@Edge Response object and return it
-        resolve(this.toComputeResponse());
+        finished = true;
       });
-      this.on('error', (err) => {
-        reject(err);
+      const initialDataChunks: (Buffer | Uint8Array)[] = [];
+      const initialDataWrittenHandler = (e: DataWrittenEvent) => {
+        if (finished) {
+          return;
+        }
+        initialDataChunks[e.index] = this.dataFromDataWrittenEvent(e);
+      };
+      this.on('_dataWritten', initialDataWrittenHandler);
+      this.on('_headersSent', (e: HeadersSentEvent) => {
+        // Convert the response object to Compute@Edge Response object and return it
+        const { statusCode, statusMessage, headers } = e;
+        resolve(this._toComputeResponse(statusCode, statusMessage, headers, initialDataChunks, finished));
       });
     });
+  }
+
+  dataFromDataWrittenEvent(e: DataWrittenEvent): Buffer | Uint8Array {
+    const { index, entry } = e;
+
+    let { data, encoding } = entry;
+    if(index === 0) {
+      if(typeof data !== 'string') {
+        console.error('First chunk should be string, not sure what happened.');
+        throw new ERR_INVALID_ARG_TYPE('packet.data', [ 'string', 'Buffer', 'Uint8Array' ], data);
+      }
+      // The first X bytes are header material, so we remove it.
+      data = data.slice(this.writtenHeaderBytes);
+    }
+
+    if(typeof data === 'string') {
+      data = Buffer.from(data, encoding);
+    }
+
+    return data;
   }
 
   override _finish() {
@@ -290,44 +319,42 @@ export class ComputeJsServerResponse extends ComputeJsOutgoingMessage implements
 
   computeResponse: Promise<Response>;
 
-  toComputeResponse() {
-    // Currently this is expected to be called after the _writtenDataBuffer is complete, in other words
-    // after OutgoingMessage's finish event has fired.
-    // TODO: Make this so that it's possible to keep streaming to the buffer even after this object is
-    // constructed and returned from the fetch handler.
+  _toComputeResponse(
+    status: number,
+    statusText: string,
+    sentHeaders: Record<string, string>,
+    initialDataChunks: (Buffer | Uint8Array)[],
+    finished: boolean,
+  ) {
+    const headers = new Headers();
+    for (const [key, value] of Object.entries(sentHeaders)) {
+      headers.append(key, value);
+    }
 
     const _this = this;
     const body = this._hasBody ? new ReadableStream<Uint8Array>({
       start(controller) {
-        // First packet contains the header. sigh.
-        for (const [index, packet] of _this._writtenDataBuffer.entries.entries()) {
-          let { data, encoding } = packet;
-          if(index === 0) {
-            if(typeof data !== 'string') {
-              console.error('First chunk should be string, not sure what happened.');
-              throw new ERR_INVALID_ARG_TYPE('packet.data', [ 'string', 'Buffer', 'Uint8Array' ], data);
-            }
-            // The first X bytes are header material, so we remove it.
-            data = data.slice(_this.writtenHeaderBytes);
-          }
-
-          if(typeof data === 'string') {
-            data = Buffer.from(data, encoding);
-          }
-
-          controller.enqueue(data);
+        for (const dataChunk of initialDataChunks) {
+          controller.enqueue(dataChunk);
         }
-        controller.close();
+
+        if(finished) {
+          controller.close();
+        } else {
+          _this.on('finish', () => {
+            finished = true;
+            controller.close();
+          });
+          _this.on('_dataWritten', (e: DataWrittenEvent) => {
+            if (finished) {
+              return;
+            }
+            const data = _this.dataFromDataWrittenEvent(e);
+            controller.enqueue(data);
+          });
+        }
       },
     }) : null;
-
-    const status = this.statusCode;
-    const statusText = this.statusMessage;
-
-    const headers = new Headers();
-    for (const [key, value] of Object.entries(this._objSentHeaders)) {
-      headers.append(key, value);
-    }
 
     return new Response(body, {
       status,

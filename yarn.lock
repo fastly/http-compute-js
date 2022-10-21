@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@fastly/js-compute@^0.5.2":
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/@fastly/js-compute/-/js-compute-0.5.2.tgz#e927be59d23a1b6dc48b5f59b56b4ab94360ffa4"
-  integrity sha512-Dr0aw55M05kuRL9+awRtvJqu3Wo1kmxbuVqtX7Y9ke3LNKsmjDwf7T4WOAO4EQYIwtDGLVP8uIq4RxFxl5frlA==
+"@fastly/js-compute@^0.5.4":
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/@fastly/js-compute/-/js-compute-0.5.4.tgz#b4870f5557ff3519b0c34f50b3b4d4455aff0b5a"
+  integrity sha512-ZyrgbNLIu4tFnx8b/0fx5K0zsMdKvrT3ZVYHt4Bkxge91BfSGcOyRioonCtorJpiNHkQ0HZbGf/A+xp1Snt8Xg==
   dependencies:
     typedoc-loopingz-theme "^1.1.3"
 

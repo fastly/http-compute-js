@@ -83,6 +83,9 @@ type WrittenDataBufferEntry = OutputData & {
   written: boolean,
 };
 
+type WrittenDataBufferConstructorArgs = {
+  onWrite?: (index: number, entry: WrittenDataBufferEntry) => void,
+}
 /**
  * An in-memory buffer that stores the chunks that have been streamed to an
  * OutgoingMessage instance.
@@ -90,6 +93,11 @@ type WrittenDataBufferEntry = OutputData & {
 export class WrittenDataBuffer {
   [kCorked]: number = 0;
   entries: WrittenDataBufferEntry[] = [];
+  onWrite?: (index: number, entry: WrittenDataBufferEntry) => void;
+
+  constructor(params: WrittenDataBufferConstructorArgs = {}) {
+    this.onWrite = params.onWrite;
+  }
 
   write(data: string | Uint8Array, encoding?: BufferEncoding, callback?: WriteCallback) {
     this.entries.push({
@@ -115,9 +123,12 @@ export class WrittenDataBuffer {
 
   _flush() {
     if(this[kCorked] <= 0) {
-      for(const entry of this.entries) {
+      for(const [index, entry] of this.entries.entries()) {
         if(!entry.written) {
           entry.written = true;
+          if(this.onWrite != null) {
+            this.onWrite(index, entry);
+          }
           if(entry.callback != null) {
             entry.callback.call(undefined);
           }

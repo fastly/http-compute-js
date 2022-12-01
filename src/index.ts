@@ -19,8 +19,6 @@ export {
   ToReqResOptions,
 } from './http-compute-js/http-server';
 
-export * as polyfill from './polyfill';
-
 import {
   createServer
 } from './http-compute-js/http-server';

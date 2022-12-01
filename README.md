@@ -78,14 +78,9 @@ module.exports = {
     new webpack.ProvidePlugin({
       Buffer: [ 'buffer', 'Buffer' ],
       process: 'process',
-      setTimeout: [ 'timeout-polyfill', 'setTimeout' ],
-      clearTimeout: [ 'timeout-polyfill', 'clearTimeout' ],
     }),
   ],
   resolve: {
-    alias: {
-      'timeout-polyfill': require.resolve('@fastly/http-compute-js/dist/polyfill'),
-    },
     fallback: {
       'buffer': require.resolve('buffer/'),
       'process': require.resolve('process/browser'),

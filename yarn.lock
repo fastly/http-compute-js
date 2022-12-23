@@ -12,45 +12,45 @@
   resolved "https://registry.yarnpkg.com/@esbuild/linux-loong64/-/linux-loong64-0.15.16.tgz#284522de76abe951e4ed2bd24a467e8d49c67933"
   integrity sha512-SDLfP1uoB0HZ14CdVYgagllgrG7Mdxhkt4jDJOKl/MldKrkQ6vDJMZKl2+5XsEY/Lzz37fjgLQoJBGuAw/x8kQ==
 
-"@fastly/js-compute@^0.5.12":
-  version "0.5.12"
-  resolved "https://registry.yarnpkg.com/@fastly/js-compute/-/js-compute-0.5.12.tgz#7560c29a52b3740e845462dd0cee030170ca86bd"
-  integrity sha512-GbqQL/ztKyFnD/ZEGeVrLP19Ogs8IxHvPn2jfc1odvGui5v44iWt6JNhOLE8sTZs8wtpilxyH8UUndKbhZlQBw==
+"@fastly/js-compute@^1.0.0":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@fastly/js-compute/-/js-compute-1.0.1.tgz#609b53e32f718528fe4eda9344249dc451f81886"
+  integrity sha512-vXmrlWIvDta4aFF8XXCPYI30Fgr1AM2nQlJvhIu/qqDzLdKpQ7iRdeNLihQLPHdvHDx/+gSYM8AD+hZN9itzMg==
   dependencies:
-    "@jakechampion/wizer" "^1.5.3"
+    "@jakechampion/wizer" "^1.6.0"
     esbuild "^0.15.16"
     tree-sitter "^0.20.1"
     tree-sitter-javascript "^0.19.0"
 
-"@jakechampion/wizer-darwin-arm64@1.5.3":
-  version "1.5.3"
-  resolved "https://registry.yarnpkg.com/@jakechampion/wizer-darwin-arm64/-/wizer-darwin-arm64-1.5.3.tgz#e7f0e96993fb0611a029c8538890f0b146635654"
-  integrity sha512-9Q+UI9YgLIWxiYskJc5KAkWXsHecuGlIh2Ww12LcEgo7l2lq7D/67E4XB4S5iA33IG3kxAwPqAmBmvlYxdU7pg==
+"@jakechampion/wizer-darwin-arm64@1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@jakechampion/wizer-darwin-arm64/-/wizer-darwin-arm64-1.6.0.tgz#c026c29f804992d1e8ae5223b73aa74e9f563fd2"
+  integrity sha512-bQdIPdR+Ye0GiNdirVhx0kx14oY2uzwXfh/2dDgteBdcb7mDubzKbdt3ROMyV1UFRVhOtqbthZNk7qLBB6Occg==
 
-"@jakechampion/wizer-darwin-x64@1.5.3":
-  version "1.5.3"
-  resolved "https://registry.yarnpkg.com/@jakechampion/wizer-darwin-x64/-/wizer-darwin-x64-1.5.3.tgz#5ca283268ac89998ab480dbac0d5ea313543b5fd"
-  integrity sha512-tO25Y9dlbjUHyVa79KDk8nuTdBA81Tv/NrzIoKiSJS1lUsv87crAVNVbvazYewkvvJ7HnF89X9zFzmrp0NjL0w==
+"@jakechampion/wizer-darwin-x64@1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@jakechampion/wizer-darwin-x64/-/wizer-darwin-x64-1.6.0.tgz#7d6720433cad0113b07d32c7fc63e71f571541bb"
+  integrity sha512-b+hdpZbhilsroSJU4Z2t+qj9lz3lr3M0TTyM8vlHODP0j8ZabZwPM8314wuSdSrHM5fZ9qIAO2Q94AUBBOeuRA==
 
-"@jakechampion/wizer-linux-x64@1.5.3":
-  version "1.5.3"
-  resolved "https://registry.yarnpkg.com/@jakechampion/wizer-linux-x64/-/wizer-linux-x64-1.5.3.tgz#dd3bf6dbd297830addb7f17d89dad24c27b24a78"
-  integrity sha512-LCa2Z6ASJnTWqtRSnZrAoVeb+UyV0K5bDYKRHyUrOof0Y8sf5ElrNlM+OgV4QRfP3f/YnOrJ0A44zyIeQjkwwA==
+"@jakechampion/wizer-linux-x64@1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@jakechampion/wizer-linux-x64/-/wizer-linux-x64-1.6.0.tgz#b6a55db6db2b630ad26626b0994e876708bc123d"
+  integrity sha512-nOH/wwoN/jaLYBKyCnEQJtqEOrSuXMOWIdnh/vAp5w4sFXuyelyZY0k6g9b8puzLOyXJTrUoYfhHyf2vdLGlxQ==
 
-"@jakechampion/wizer-win32-x64@1.5.3":
-  version "1.5.3"
-  resolved "https://registry.yarnpkg.com/@jakechampion/wizer-win32-x64/-/wizer-win32-x64-1.5.3.tgz#f496bcc41cc1c3e76cc8020d51d28d1aac01d28c"
-  integrity sha512-8m+7XIcUmibXT7ZSlbseDzFHJg0mqnTL5wKE6ALFFE/jxs/EUq94V5UgX9Whaj6r9LGgbi3//SdE6th/ghhtHQ==
+"@jakechampion/wizer-win32-x64@1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@jakechampion/wizer-win32-x64/-/wizer-win32-x64-1.6.0.tgz#eaa98c5b90efd108624f455961485d201a2142bc"
+  integrity sha512-9xzpraJIhLdOnXTC1DjxjyfV52BBlAZTTAlpnE04GxVRvRGZ6wPi/RdACkg3inAfeTP7A/bTq3BJLql/Hansdw==
 
-"@jakechampion/wizer@^1.5.3":
-  version "1.5.3"
-  resolved "https://registry.yarnpkg.com/@jakechampion/wizer/-/wizer-1.5.3.tgz#ca2c0a30c42c9195ce2a6053242c7955d9daeae5"
-  integrity sha512-hSMb5AMjeRi05F9ERoqJ+3BM5jrjkQn/s5A8EIt8drV4K9jHX/3vSTHPGGY8t8nNWhjk5UW4FrBYonIy7gpvtw==
+"@jakechampion/wizer@^1.6.0":
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/@jakechampion/wizer/-/wizer-1.6.0.tgz#843f90245943b6402eab7b838725db6ad7551e0e"
+  integrity sha512-o9BMmF+4IB0zfMoh14Ds3womotxETcroqaYMWt2gSlBBmqRc+oqG1LXGCJMB6Vp24ZUVxWkVFs2LLXE6Iyz9rg==
   optionalDependencies:
-    "@jakechampion/wizer-darwin-arm64" "1.5.3"
-    "@jakechampion/wizer-darwin-x64" "1.5.3"
-    "@jakechampion/wizer-linux-x64" "1.5.3"
-    "@jakechampion/wizer-win32-x64" "1.5.3"
+    "@jakechampion/wizer-darwin-arm64" "1.6.0"
+    "@jakechampion/wizer-darwin-x64" "1.6.0"
+    "@jakechampion/wizer-linux-x64" "1.6.0"
+    "@jakechampion/wizer-win32-x64" "1.6.0"
 
 "@types/node@^18.6.4":
   version "18.6.4"

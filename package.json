@@ -31,16 +31,16 @@
     "url": "https://github.com/fastly/http-compute-js/issues"
   },
   "homepage": "https://github.com/fastly/http-compute-js#readme",
-  "devDependencies": {
-    "@fastly/js-compute": "^1.0.0",
-    "@types/node": "^18.6.4",
-    "typescript": "^4.7.4"
-  },
   "dependencies": {
     "buffer": "^6.0.3",
     "node-inspect-extracted": "^1.1.0",
     "process": "^0.11.10",
     "stream-browserify": "^3.0.0"
+  },
+  "devDependencies": {
+    "@fastly/js-compute": "^2.0.0",
+    "@types/node": "^18.6.4",
+    "typescript": "^4.7.4"
   },
   "files": [
     "dist/**/*.js",

@@ -1,14 +1,14 @@
 {
   "name": "@fastly/http-compute-js",
-  "version": "0.4.0",
-  "description": "A library aiming to provide Node.js-compatible request and response objects",
+  "version": "1.0.0",
+  "description": "Node.js-compatible request and response objects for Compute@Edge JavaScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "directories": {
     "lib": "lib"
   },
   "scripts": {
-    "prepack": "yarn clean && yarn compile",
+    "prepack": "npm run clean && npm run compile",
     "compile": "tsc --build tsconfig.json",
     "clean": "rm -rf dist"
   },

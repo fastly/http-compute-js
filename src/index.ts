@@ -5,8 +5,8 @@
 
 /// <reference types="@fastly/js-compute" />
 
-export { ComputeJsIncomingMessage } from './http-compute-js/http-incoming';
-export { ComputeJsOutgoingMessage } from './http-compute-js/http-outgoing';
+export { ComputeJsIncomingMessage } from './http-compute-js/http-incoming.js';
+export { ComputeJsOutgoingMessage } from './http-compute-js/http-outgoing.js';
 export {
   STATUS_CODES,
   createServer,
@@ -17,11 +17,11 @@ export {
   HttpServerOptions,
   ReqRes,
   ToReqResOptions,
-} from './http-compute-js/http-server';
+} from './http-compute-js/http-server.js';
 
 import {
   createServer
-} from './http-compute-js/http-server';
+} from './http-compute-js/http-server.js';
 export default {
   createServer,
 };

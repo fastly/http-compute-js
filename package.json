@@ -4,6 +4,7 @@
   "description": "Node.js-compatible request and response objects for Compute@Edge JavaScript",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "directories": {
     "lib": "lib"
   },

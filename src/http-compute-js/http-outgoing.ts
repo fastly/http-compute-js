@@ -24,15 +24,15 @@ import {
   ERR_STREAM_DESTROYED,
   ERR_STREAM_NULL_VALUES,
   ERR_STREAM_WRITE_AFTER_END
-} from '../utils/errors';
-import { isUint8Array, validateString } from '../utils/types';
-import { kNeedDrain, kOutHeaders, utcDate } from './internal-http';
-import { getDefaultHighWaterMark } from './internal-streams-state';
+} from '../utils/errors.js';
+import { isUint8Array, validateString } from '../utils/types.js';
+import { kNeedDrain, kOutHeaders, utcDate } from './internal-http.js';
+import { getDefaultHighWaterMark } from './internal-streams-state.js';
 import {
   checkInvalidHeaderChar,
   checkIsHttpToken,
   chunkExpression as RE_TE_CHUNKED,
-} from './http-common';
+} from './http-common.js';
 
 const kCorked = Symbol('corked');
 const kUniqueHeaders = Symbol('kUniqueHeaders');

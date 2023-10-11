@@ -5,7 +5,7 @@
  * Portions of this file Copyright Joyent, Inc. and other Node contributors. See LICENSE file for details.
  */
 
-import { ERR_INVALID_ARG_TYPE } from './errors';
+import { ERR_INVALID_ARG_TYPE } from './errors.js';
 
 /* These items copied from Node.js: node/lib/internal/validators.js */
 

@@ -10,7 +10,7 @@
 import type { IncomingHttpHeaders, IncomingMessage } from 'http';
 import { Readable } from 'stream';
 
-import { ERR_METHOD_NOT_IMPLEMENTED } from '../utils/errors';
+import { ERR_METHOD_NOT_IMPLEMENTED } from '../utils/errors.js';
 
 const kHeaders = Symbol('kHeaders');
 const kHeadersDistinct = Symbol('kHeadersDistinct');

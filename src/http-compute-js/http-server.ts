@@ -16,11 +16,11 @@ import {
   ERR_INVALID_ARG_VALUE,
   ERR_INVALID_CHAR,
   ERR_METHOD_NOT_IMPLEMENTED,
-} from '../utils/errors';
-import { ComputeJsOutgoingMessage, DataWrittenEvent, HeadersSentEvent } from './http-outgoing';
-import { chunkExpression } from './http-common';
-import { ComputeJsIncomingMessage } from './http-incoming';
-import { kOutHeaders } from './internal-http';
+} from '../utils/errors.js';
+import { ComputeJsOutgoingMessage, DataWrittenEvent, HeadersSentEvent } from './http-outgoing.js';
+import { chunkExpression } from './http-common.js';
+import { ComputeJsIncomingMessage } from './http-incoming.js';
+import { kOutHeaders } from './internal-http.js';
 import { EventEmitter } from "events";
 
 /* These items copied from Node.js: node/lib/_http_common.js. */

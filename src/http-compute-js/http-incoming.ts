@@ -21,7 +21,7 @@ const kTrailersCount = Symbol('kTrailersCount');
 
 /**
  * This is an implementation of IncomingMessage from Node.js intended to run in
- * Compute@Edge. The 'Readable' interface of this class is wired to a 'Request'
+ * Fastly Compute. The 'Readable' interface of this class is wired to a 'Request'
  * object's 'body'.
  *
  * This instance can be used in normal ways, but it does not give access to the

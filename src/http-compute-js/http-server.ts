@@ -104,9 +104,9 @@ export const STATUS_CODES: Record<number, string> = {
 
 /**
  * This is an implementation of ServerResponse from Node.js intended to run in
- * Compute@Edge. The 'Writable' interface of this class is wired to an in-memory
+ * Fastly Compute. The 'Writable' interface of this class is wired to an in-memory
  * buffer. This class also provides a method that creates a Response object that
- * can be handled by Compute@Edge.
+ * can be handled by Compute.
  *
  * This instance can be used in normal ways, but it does not give access to the
  * underlying socket (because there isn't one. req.socket will always return null).
@@ -151,7 +151,7 @@ export class ComputeJsServerResponse extends ComputeJsOutgoingMessage implements
     // http, and if it is, we would start performance measurement of server response statistics.
     // We may choose to do something like this too in the future.
 
-    // In our implementation, we set up some event handlers to fulfill the Compute@Edge Response.
+    // In our implementation, we set up some event handlers to fulfill the Compute Response.
     this.computeResponse = new Promise<Response>(resolve => {
       let finished = false;
       this.on('finish', () => {
@@ -167,7 +167,7 @@ export class ComputeJsServerResponse extends ComputeJsOutgoingMessage implements
       this.on('_dataWritten', initialDataWrittenHandler);
       this.on('_headersSent', (e: HeadersSentEvent) => {
         this.off('_dataWritten', initialDataWrittenHandler);
-        // Convert the response object to Compute@Edge Response object and return it
+        // Convert the response object to Compute Response object and return it
         const { statusCode, statusMessage, headers } = e;
         resolve(this._toComputeResponse(statusCode, statusMessage, headers, initialDataChunks, finished));
       });
@@ -442,7 +442,7 @@ export type ListenListener =
 
 /**
  * This class simplifies the creation of a request event listener that provides
- * access to IncomingMessage and ServerResponse in Compute@Edge. Its interface
+ * access to IncomingMessage and ServerResponse in Compute. Its interface
  * is inspired by http.Server from Node.js.
  */
 export class HttpServer extends EventEmitter {
@@ -461,7 +461,7 @@ export class HttpServer extends EventEmitter {
       port = undefined;
     }
     if(port != null) {
-      console.warn('Cannot set port programmatically. The port used is determined by the Compute@Edge environment.');
+      console.warn('Cannot set port programmatically. The port used is determined by the Compute environment.');
     }
     if(onListen != null) {
       console.log(`Attaching 'listening' listener, but note that this event runs outside the context of handling a request.`);
@@ -473,7 +473,7 @@ export class HttpServer extends EventEmitter {
       const { req, res } = toReqRes(event.request);
       this.emit('request', req, res);
 
-      // Convert the object to Compute@Edge-compatible response
+      // Convert the object to Compute-compatible response
       return await toComputeResponse(res);
     };
 

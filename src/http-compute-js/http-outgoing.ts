@@ -165,7 +165,7 @@ export type DataWrittenEvent = {
 
 /**
  * This is an implementation of OutgoingMessage from Node.js intended to run in
- * Compute@Edge. The 'Writable' interface of this class is wired to an in-memory
+ * Fastly Compute. The 'Writable' interface of this class is wired to an in-memory
  * buffer.
  *
  * This instance can be used in normal ways, but it does not give access to the

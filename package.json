@@ -1,6 +1,6 @@
 {
   "name": "@fastly/http-compute-js",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Node.js-compatible request and response objects for JavaScript on Fastly Compute",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

@@ -329,13 +329,13 @@ export class ComputeJsServerResponse extends ComputeJsOutgoingMessage implements
   _toComputeResponse(
     status: number,
     statusText: string,
-    sentHeaders: Record<string, string>,
+    sentHeaders: [header: string, value: string][],
     initialDataChunks: (Buffer | Uint8Array)[],
     finished: boolean,
   ) {
     const headers = new Headers();
-    for (const [key, value] of Object.entries(sentHeaders)) {
-      headers.append(key, value);
+    for (const [header, value] of sentHeaders) {
+      headers.append(header, value);
     }
 
     const _this = this;

@@ -155,7 +155,7 @@ export class WrittenDataBuffer {
 export type HeadersSentEvent = {
   statusCode: number,
   statusMessage: string,
-  headers: Record<string, string>,
+  headers: [header: string, value: string][],
 };
 
 export type DataWrittenEvent = {
@@ -431,14 +431,14 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
 
       const { statusCode: statusCodeText, statusMessage } = statusLineResult.groups ?? {};
       const statusCode = parseInt(statusCodeText, 10);
-      const headers: Record<string, string> = {};
+      const headers: [header: string, value: string][] = []
 
       for (const headerLine of headerLines) {
         if(headerLine !== '') {
           const pos = headerLine.indexOf(': ');
           const k = headerLine.slice(0, pos);
           const v = headerLine.slice(pos + 2); // Skip the colon and the space
-          headers[k] = v;
+          headers.push([k, v]);
         }
       }
 

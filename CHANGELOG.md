@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix: set req complete when pushing null
+
 ## [1.1.2] - 2023-11-08
 
 - Apply "Compute" branding change.

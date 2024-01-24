@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix: Multiple Set-Cookie headers should not be overwritten
+
 ## [1.1.3] - 2024-01-25
 
 ### Fixed

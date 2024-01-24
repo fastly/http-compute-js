@@ -211,6 +211,7 @@ export class ComputeJsIncomingMessage extends Readable implements IncomingMessag
     if(this._stream == null) {
       // For GET and HEAD requests, the stream would be empty.
       // Simply signal that we're done.
+      this.complete = true;
       this.push(null);
       return;
     }
@@ -220,6 +221,7 @@ export class ComputeJsIncomingMessage extends Readable implements IncomingMessag
       const data = await reader.read();
       if (data.done) {
         // Done with stream, tell Readable we have no more data;
+        this.complete = true;
         this.push(null);
       } else {
         this.push(data.value);

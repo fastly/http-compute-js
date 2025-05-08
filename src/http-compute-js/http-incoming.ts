@@ -7,8 +7,8 @@
 
 // This file modeled after Node.js - node/lib/_http_incoming.js
 
-import type { IncomingHttpHeaders, IncomingMessage } from 'http';
-import { Readable } from 'stream';
+import { Readable } from 'stream-browserify';
+import { type IncomingHttpHeaders, type IncomingMessage } from 'node:http';
 
 import { ERR_METHOD_NOT_IMPLEMENTED } from '../utils/errors.js';
 

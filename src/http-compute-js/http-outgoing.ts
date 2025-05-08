@@ -8,8 +8,9 @@
 // This file modeled after Node.js - node/lib/_http_outgoing.js
 
 import { Buffer } from 'buffer';
-import { Writable } from 'stream';
-import type { OutgoingHttpHeaders, OutgoingMessage, IncomingMessage, OutgoingHttpHeader } from 'http';
+import { Writable } from 'stream-browserify';
+
+import { type OutgoingHttpHeaders, type OutgoingMessage, type IncomingMessage, type OutgoingHttpHeader } from 'node:http';
 
 import {
   ERR_HTTP_HEADERS_SENT,

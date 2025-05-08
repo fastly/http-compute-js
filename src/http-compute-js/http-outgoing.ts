@@ -497,7 +497,7 @@ export class ComputeJsOutgoingMessage extends Writable implements OutgoingMessag
     return this.outputSize < HIGH_WATER_MARK;
   }
 
-  _storeHeader(firstLine: string, headers: OutgoingHttpHeaders | ReadonlyArray<[string, string]> | null) {
+  _storeHeader(firstLine: string, headers: OutgoingHttpHeaders | ReadonlyArray<OutgoingHttpHeader> | ReadonlyArray<[string, string]> | null) {
     // firstLine in the case of request is: 'GET /index.html HTTP/1.1\r\n'
     // in the case of response it is: 'HTTP/1.1 200 OK\r\n'
     const state = {

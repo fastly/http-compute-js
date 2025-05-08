@@ -5,6 +5,8 @@
 
 /// <reference types="@fastly/js-compute" />
 
+import './polyfills.js';
+
 export { ComputeJsIncomingMessage } from './http-compute-js/http-incoming.js';
 export { ComputeJsOutgoingMessage } from './http-compute-js/http-outgoing.js';
 export {

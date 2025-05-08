@@ -8,7 +8,8 @@
 // This file modeled after Node.js - node/lib/_http_server.js
 
 import { Buffer } from 'buffer';
-import type { IncomingMessage, OutgoingHttpHeader, OutgoingHttpHeaders, ServerResponse } from 'http';
+import { EventEmitter } from 'events';
+import { type IncomingMessage, type OutgoingHttpHeader, type OutgoingHttpHeaders, type ServerResponse } from 'node:http';
 
 import {
   ERR_HTTP_HEADERS_SENT,
@@ -21,7 +22,6 @@ import { ComputeJsOutgoingMessage, DataWrittenEvent, HeadersSentEvent } from './
 import { chunkExpression } from './http-common.js';
 import { ComputeJsIncomingMessage } from './http-incoming.js';
 import { kOutHeaders } from './internal-http.js';
-import { EventEmitter } from "events";
 
 /* These items copied from Node.js: node/lib/_http_common.js. */
 
@@ -126,8 +126,6 @@ export class ComputeJsServerResponse extends ComputeJsOutgoingMessage implements
 
   _sent100: boolean;
   _expect_continue: boolean;
-
-  [kOutHeaders]: Record<string, any> | null = null;
 
   constructor(req: IncomingMessage) {
     super(req);

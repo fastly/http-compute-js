@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix unnecessary override field for kOutHeaders
+- Fix signature of _setHeader
+- Lock @types/node to 18.6.4 to ensure successful builds
+- Clarify license for Node.js portions
+
+### Updated
+
+- Update TypeScript and vitest
+- Polyfills referenced directly, no more Webpack requirement
+
 ## [1.1.5] - 2025-01-06
 
 ### Added

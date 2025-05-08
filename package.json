@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@fastly/js-compute": "^3.0.0",
-    "@types/node": "^18.6.4",
+    "@types/node": "18.6.4",
     "typescript": "^4.7.4",
     "vitest": "^1.2.1"
   },

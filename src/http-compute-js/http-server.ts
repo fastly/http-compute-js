@@ -127,8 +127,6 @@ export class ComputeJsServerResponse extends ComputeJsOutgoingMessage implements
   _sent100: boolean;
   _expect_continue: boolean;
 
-  [kOutHeaders]: Record<string, any> | null = null;
-
   constructor(req: IncomingMessage) {
     super(req);
 

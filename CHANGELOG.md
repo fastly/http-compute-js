@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Update TypeScript and vitest
 - Polyfills referenced directly, no more Webpack requirement
+- Release to npmjs using updated CI workflow and trusted publishing
 
 ## [1.1.5] - 2025-01-06
 

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-02-12
+
 ### Fixed
 
 - Fix unnecessary override field for kOutHeaders
@@ -83,7 +85,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Changed to use TextEncoder instead of Buffer.from() for converting UTF-8 text streams to binary, giving massive performance improvement
 
-[unreleased]: https://github.com/fastly/http-compute-js/compare/v1.1.5...HEAD
+[unreleased]: https://github.com/fastly/http-compute-js/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/fastly/http-compute-js/compare/v1.1.5...v2.0.0
 [1.1.5]: https://github.com/fastly/http-compute-js/compare/v1.1.4...v1.1.5
 [1.1.4]: https://github.com/fastly/http-compute-js/compare/v1.1.3...v1.1.4
 [1.1.3]: https://github.com/fastly/http-compute-js/compare/v1.1.2...v1.1.3

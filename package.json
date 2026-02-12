@@ -9,7 +9,8 @@
     "lib": "lib"
   },
   "scripts": {
-    "prepack": "npm run clean && npm run compile",
+    "ci": "npm run clean && npm run compile",
+    "prepack": "npm run ci",
     "compile": "tsc --build tsconfig.json",
     "clean": "rm -rf dist",
     "test": "vitest run"
